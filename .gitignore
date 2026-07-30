@@ -1,0 +1,15 @@
+node_modules/
+backend/
+frontend/
+dist/
+scratch/
+fix_allowTwo_ui.js
+test_db.js
+update_db.js
+update_quiz_runner.js
+update_summary.js
+OBRIR_ESTATIC.bat
+package-lock.json
+package.json
+.DS_Store
+*.log
