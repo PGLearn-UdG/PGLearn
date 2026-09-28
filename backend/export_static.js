@@ -46,16 +46,28 @@ const content = 'window.LIPPSO_QUIZ_DATA = ' + JSON.stringify(data) + ';';
 fs.writeFileSync(path.join(publicDir, 'data.js'), content);
 fs.writeFileSync(path.join(dataSubdir, 'data.js'), content);
 
-console.log('Static data exported to public/data.js and public/data/data.js');
+// Also write to repo root for GitHub Pages
+const rootDir = path.join(__dirname, '..');
+const rootDataSubdir = path.join(rootDir, 'data');
+if (!fs.existsSync(rootDataSubdir)) fs.mkdirSync(rootDataSubdir, { recursive: true });
+fs.writeFileSync(path.join(rootDir, 'data.js'), content);
+fs.writeFileSync(path.join(rootDataSubdir, 'data.js'), content);
 
-// Also copy uploads folder
+console.log('Static data exported to public/ and root data.js / data/data.js');
+
+// Also copy uploads folder to public and root
 const uploadsSource = path.join(__dirname, 'uploads');
 const uploadsDest = path.join(publicDir, 'uploads');
-if (fs.existsSync(uploadsSource)) {
-    if (!fs.existsSync(uploadsDest)) fs.mkdirSync(uploadsDest, { recursive: true });
-    const files = fs.readdirSync(uploadsSource);
-    files.forEach(f => {
-        fs.copyFileSync(path.join(uploadsSource, f), path.join(uploadsDest, f));
-    });
-    console.log('Copied', files.length, 'upload files');
-}
+const rootUploadsDest = path.join(rootDir, 'uploads');
+
+[uploadsDest, rootUploadsDest].forEach(dest => {
+    if (fs.existsSync(uploadsSource)) {
+        if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+        const files = fs.readdirSync(uploadsSource);
+        files.forEach(f => {
+            fs.copyFileSync(path.join(uploadsSource, f), path.join(dest, f));
+        });
+        console.log('Copied', files.length, 'upload files to', dest);
+    }
+});
+
